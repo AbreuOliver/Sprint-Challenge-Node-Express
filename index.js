@@ -2,7 +2,7 @@ const express = require('express');
 
 // DEFINE ROUTES:
 const projectRoute = require('./routers/projectRouter');
-// const actionsRoute = require('./routers/actionsRouter');
+const actionsRoute = require('./routers/actionsRouter');
 
 const server = express();
 const PORT = 9000;
@@ -11,6 +11,7 @@ const PORT = 9000;
 // MIDDLEWARE:
 server.use(express.json());
 server.use('/api/projects', projectRoute);
+server.use('/api/actions', actionsRoute);
 
 
 // ROUTE HANDLER TEST:
@@ -39,7 +40,7 @@ server.get('/api/projects', (req, res) => {
 		})
 });
 
-// ---> GET (BY ID)
+// ---> GET PROJECT (BY ID)
 server.get('/api/projects/:id', (req, res) => {
 	const { id } = req.params;
 	projectRoute
@@ -50,6 +51,20 @@ server.get('/api/projects/:id', (req, res) => {
 		.catch(error => {
 			res.status(404)
 			res.json("Project not found.")
+		})
+});
+
+// ---> GET ACTION (BY ID)
+server.get('/api/actions/:id', (req, res) => {
+	const id = req.params.id;
+	actionsRoute
+		.get(id)
+		.then(actions => {
+			res.json(actions)
+		})
+		.catch(error => {
+			res.status(404)
+			res.json("Action not found.")
 		})
 });
 

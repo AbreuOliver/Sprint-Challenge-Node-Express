@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../data/helpers/projectModel');
+const projectsDB = require('../data/helpers/projectModel');
 
 // GET ALL PROJECTS
 router.get('/', (req, res) => {
-    db
+    projectsDB
         .get()
         .then(projects => res.json(projects))
         .catch(err => res.status(500).json({ error: "The project could not be retrieved"}))
@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 // GET ONE SPECIFIC PROJECT
 router.get('/:id', (req, res) => {
 	const id  = req.params.id;
-	db
+	projectsDB
 		.get(id)
 		.then(project => {
 			if(project.id) {
@@ -37,10 +37,11 @@ router.post('/', (req, res) => {
     const { name, description } = req.body;
     const newProject = { name, description };
     if(!name || !description) {
-        res.status(400)
+        res
+            .status(400)
             .json.apply({ message: "The project name and/or description are missing"})
     } else {
-        db
+        projectsDB
             .insert(newProject)
             .then(post => res.json(post))
             .catch(err => res.status(500),json({ error: "Failed to add new project"}))
@@ -49,9 +50,9 @@ router.post('/', (req, res) => {
 
 // PUT 
 router.put('/:id', (req, res) => {
-	const { id } = req.params;
+	const id = req.params.id;
 	const newProject = req.body;
-	db
+	projectsDB
 		.update(id, newProject)
 		.then(project => {
 			if(project) { 
@@ -73,8 +74,8 @@ router.put('/:id', (req, res) => {
 
 // DELETE
 router.delete('/:id', (req, res) => {
-	const { id } = req.params;
-	db
+	const id = req.params.id;
+	projectsDB
 		.remove(id)
 		.then(count => {
 			if(count) {

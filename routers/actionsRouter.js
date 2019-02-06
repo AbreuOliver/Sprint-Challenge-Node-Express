@@ -33,8 +33,8 @@ router.get('/:id', (req, res) => {
 })
 
 // POST
-router.post('/'. (req, res) => {
-    const { project_id, description, notes };
+router.post('/', (req, res) => {
+    const { project_id, description, notes } = req.body;
     const newAction = { project_id, description, notes };
     if(!project_id || !description || !notes) {
         res
@@ -64,8 +64,9 @@ router.put('/:id', (req, res) => {
             }
         })
         .catch(err => {
-            .status(500)
-            .json({ message: "Faled to upload action"})
+            res
+                .status(500)
+                .json({ message: "Faled to upload action"})
         })
 })
 
@@ -75,9 +76,10 @@ router.delete('/:id', (req, res) => {
     actionsDB
         .remove(id)
         .then(count => {
-            if (count) => {
+            if (count) {
                 res.json({ message: "Action successfully deleted"})
-            } else {
+            } 
+            else {
                 res
                     .status(404)
                     .json({ error: "Action at specified ID could not be found "})
