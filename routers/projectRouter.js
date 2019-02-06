@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../data/helpers/projectModel');
 
 // GET ALL PROJECTS
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
     db
         .get()
         .then(projects => res.json(projects))
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 
 // GET ONE SPECIFIC PROJECT
 router.get('/:id', (req, res) => {
-	const { id } = req.params;
+	const id  = req.params.id;
 	db
 		.get(id)
 		.then(project => {
