@@ -1,11 +1,113 @@
 const express = require('express');
+
+// DEFINE ROUTES:
+const projectRoute = require('./routers/projectRouter');
+// const actionsRoute = require('./routers/actionsRouter');
+
 const server = express();
-server.use('/', (req, res) => {
-    res.status(200).send('Hello, from my Express project so far!')
+const PORT = 9000;
+
+
+// MIDDLEWARE:
+server.use(express.json());
+server.use('/api/projects', projectRoute);
+
+
+// ROUTE HANDLER TEST:
+server.get('/', (req, res) => {
+	res.send("All good from inside the server");
 });
 
-server.listen(9000, () => {
-    console.log('All is good on port 9000!');
+
+// LISTEN: 
+server.listen(PORT, err => {
+	console.log(`listening on port ${PORT}`)
+})
+
+
+// CRUD OPERATIONS 
+// ---> GET (ALL)
+server.get('/api/projects', (req, res) => {
+	projectRoute
+		.get()
+		.then(project => {
+			res.json(project)
+		})
+		.catch(error => {
+			res.status(404)
+			res.json("Project not found.")
+		})
+});
+
+// ---> GET (BY ID)
+server.get('/api/projects/:id', (req, res) => {
+	const { id } = req.params;
+	projectRoute
+		.get(id)
+		.then(project => {
+			res.json(project)
+		})
+		.catch(error => {
+			res.status(404)
+			res.json("Project not found.")
+		})
+});
+
+// ---> POST
+server.post('/api/projects', (req, res) => {
+	const project = req.body;
+	console.log('Projects!');
+	projectRoute
+		.insert(project)
+		.then(project => {
+			console.log("inside the projects!")
+			res.json(project)
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json("Unexpected condition: no project created")
+		})
 });
 
 
+// ---> PUT
+server.put('/api/projects/:id', (req, res) => {
+	const { id } =req.params;
+	const project = req.body;
+	projectRoute
+		.update(id, project)
+		.then(project => {
+			res.json(project)
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json("Unexpected condition: project not deleted")
+		})
+})
+
+
+// ---> DELETE
+server.delete('/api/projects/:id', (req, res) => {
+	const { id } = req.params;
+	projectRouter
+		.remove(id)
+		.then(count => {
+			if(count) {
+				res
+					.status(201)
+					.json("Item successfully deleted")
+			}
+			else {
+				res
+					.status(404)
+					.json("invalid id")
+			}
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json("Unexpection condition: item no deleted")
+		})
+});
