@@ -32,7 +32,7 @@ router.get('/:id', (req, res) => {
         })
 })
 
-// POST
+// POST  CHECK TO SEE THAT THE PROJECT ID EXISTS BEFORE CREATING AN ACTION
 router.post('/', (req, res) => {
     const { project_id, description, notes } = req.body;
     const newAction = { project_id, description, notes };
