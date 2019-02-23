@@ -90,10 +90,10 @@ router.delete("/:id", (req, res) => {
 		.remove(id)
 		.then(count => {
 			if (count) {
-				projectsDB.getProjectActionsDB(id)
+				projectsDB.getProjectActions(id)
 					.then(response => {
 						response.map(action => {
-							actions
+							actionsDB
 								.remove(action.id)
 								.then(() => {})
 						})
@@ -118,35 +118,5 @@ router.delete("/:id", (req, res) => {
 				})
 		})
 })
-
-// router.delete('/:id', (req, res) => {
-// 	const id = req.params.id;
-// 	projectsDB
-// 		.remove(id)
-// 		.then(count => {
-// 			if(count) {
-// 				projectsDB.getProjectActionsDB(id).then(response => {
-// 					response.map(action => {
-// 						actions.map(action => {
-// 							console.log("action.id:", action.id);
-// 							actionsDB.remove(action.id).then(() => {
-// 								console.log("Successfully deleted project with it's action(s)");
-// 							});
-// 						})
-// 						res.json({ message: "Project does not exist "})
-// 				}))
-// 			} else {
-// 				res
-// 					.status(404)
-// 					.json({ error: "Project with specified id not found" })
-// 			}
-// 		})
-// 		.catch(err =>
-// 			res
-// 				.status(500)
-// 				.json({ error: "Failed to delete project!", err })
-// 		);
-// 	}
-// });
 
 module.exports = router;
