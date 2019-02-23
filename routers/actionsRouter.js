@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const actionsDB = require('../data/helpers/actionModel');
 
-// GET ALL ACTIONS
+// GET ALL ACTIONS  ** FUNCTIONING **
 router.get('/', (req, res) => {
     actionsDB
         .get()
@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
         .catch(err => res.status(500).json({ error: "Action information could not be retrieved"}))
 })
 
-// GET ONE SPECIFIC ACTION
+// GET ONE SPECIFIC ACTION  ** FUNCTIONING **
 router.get('/:id', (req, res) => {
     const id = req.params.id;
     actionsDB
@@ -24,7 +24,7 @@ router.get('/:id', (req, res) => {
                     .status(404)
                     .json({ message: "The action with that specified ID was not found"})
             }
-        })
+        }) // THIS CATCH PROBABLY ISN'T NECESSARY SINCE I'M USING AN 'ELSE' BUT, IT'S PRACTICE, RIGHT?
         .catch(err => {
             res
                 .status(500)
@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
     }
 })
 
-// PUT
+// PUT  ** FUNCTIONING **
 router.put('/:id', (req, res) => {
     const id = req.params.id;
     const newAction = req.body;
@@ -70,7 +70,7 @@ router.put('/:id', (req, res) => {
         })
 })
 
-// DELETE
+// DELETE ACTIONS WITHOUT DELETING PROJECT  ** FUNCTIONING **
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
     actionsDB

@@ -3,7 +3,7 @@ const router = express.Router();
 const projectsDB = require('../data/helpers/projectModel');
 const actionsDB = require('../data/helpers/actionModel.js');
 
-// GET ALL PROJECTS
+// GET ALL PROJECTS  ** FUNCTIONING **
 router.get('/', (req, res) => {
     projectsDB
         .get()
@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
         .catch(err => res.status(500).json({ error: "The project could not be retrieved"}))
 })
 
-// GET ONE SPECIFIC PROJECT
+// GET ONE SPECIFIC PROJECT  ** FUNCTIONING **
 router.get('/:id', (req, res) => {
 	const id  = req.params.id;
 	projectsDB
@@ -33,31 +33,34 @@ router.get('/:id', (req, res) => {
 		})
 });
 
-// POST 
+// POST  ** FUNCTIONING **
 router.post('/', (req, res) => {
     const { name, description } = req.body;
     const newProject = { name, description };
     if(!name || !description) {
-        res
-            .status(400)
-            .json.apply({ message: "The project name and/or description are missing"})
+		return
+			res
+				.status(400)
+				.json.apply({ message: "The project name and/or description are missing"})
     } else {
         projectsDB
-            .insert(newProject)
-            .then(post => res.json(post))
+			.insert(newProject)
+			.then(post => res
+				.status(201)
+				.json(post))
             .catch(err => res.status(500).json({ error: "Failed to add new project"}))
     }
 })
 
-// PUT 
+// PUT  ** FUNCTIONING **
 router.put('/:id', (req, res) => {
 	const id = req.params.id;
 	const { name, description } = req.body;
 	const newProject = { name, description }
 	if(!name || !description) {
 		res
-		.status(400)
-		.json.apply({ message: "The project name and/or description are missing"})
+			.status(400)
+			.json.apply({ message: "The project name and/or description are missing"})
 	} else {
 		projectsDB
 		.update(id, newProject)
@@ -81,32 +84,69 @@ router.put('/:id', (req, res) => {
 
 
 // DELETE
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
 	const id = req.params.id;
 	projectsDB
 		.remove(id)
 		.then(count => {
-			if(count) {
-				projectsDB.actionsDB(id).then(actions => {
-					actions.map(action => {
-						console.log("action.id:", action.id);
-						actionsDB.remove(action.id).then(() => {
-							console.log("Your action(s) was deleted");
-						});
+			if (count) {
+				projectsDB.getProjectActionsDB(id)
+					.then(response => {
+						response.map(action => {
+							actions
+								.remove(action.id)
+								.then(() => {})
+						})
+						res
+							.json({ 
+								messsage: `Project #${id} was successfully deleted`
+							})
 					})
-					res.json({ message: "This project was successfully deleted "})
-				}) 
 			} else {
 				res
 					.status(404)
-					.json({ error: "Project with specified id not found" })
+					.json({
+						message: `Project with ID #${id} does not exist`
+					})
 			}
 		})
-		.catch(err =>
+		.catch(() => {
 			res
 				.status(500)
-				.json({ error: "Failed to delete project!", err })
-		);
-});
+				.json({ 
+					error: `Internal server error: The project #${id} could not be removed from the database`
+				})
+		})
+})
+
+// router.delete('/:id', (req, res) => {
+// 	const id = req.params.id;
+// 	projectsDB
+// 		.remove(id)
+// 		.then(count => {
+// 			if(count) {
+// 				projectsDB.getProjectActionsDB(id).then(response => {
+// 					response.map(action => {
+// 						actions.map(action => {
+// 							console.log("action.id:", action.id);
+// 							actionsDB.remove(action.id).then(() => {
+// 								console.log("Successfully deleted project with it's action(s)");
+// 							});
+// 						})
+// 						res.json({ message: "Project does not exist "})
+// 				}))
+// 			} else {
+// 				res
+// 					.status(404)
+// 					.json({ error: "Project with specified id not found" })
+// 			}
+// 		})
+// 		.catch(err =>
+// 			res
+// 				.status(500)
+// 				.json({ error: "Failed to delete project!", err })
+// 		);
+// 	}
+// });
 
 module.exports = router;
