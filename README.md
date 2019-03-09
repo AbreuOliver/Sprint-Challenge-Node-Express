@@ -26,13 +26,19 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+> I learned that Express is like "React for [my] backe-end" code, and that I can creat my own middleware for it. 
+
 - [ ] Describe Middleware?
+> Middleware is any added function that is introduced before the intended result of a pure-function code.
 
 - [ ] Describe a Resource?
+> In express, a resource can be anything, but is most often thought of as the "main parts" of the application and is (usually) accessible via a unique URI
 
 - [ ] What can the API return to help clients know if a request was successful?
+> A status code.
 
 - [ ] How can we partition our application into sub-applications?
+> By compartmentalizing our code with express (server-side) routing. 
 
 ## Project Setup
 
